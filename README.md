@@ -2,6 +2,10 @@
 
 A modern, responsive Todo application built with React and Vite, featuring a clean UI powered by Tailwind CSS.
 
+## App Preview
+![Preview 1](src/assets/1.png)  
+![Preview 2](src/assets/2.png)
+
 ## 🚀 Features
 
 - **Add, Edit, and Delete Todos**: Full CRUD operations for managing todo items

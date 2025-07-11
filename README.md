@@ -99,8 +99,4 @@ This project uses modern React patterns and is set up for efficient development:
 
 ## 📄 License
 
-This project is part of a technical test and is private.
-
----
-
-Built with ❤️ using React, Vite, and Tailwind CSS
+This project is part of a technical test.

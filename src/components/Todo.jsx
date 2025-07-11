@@ -13,6 +13,8 @@ const Todo = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingTaskId, setEditingTaskId] = useState(null);
     const [editedText, setEditedText] = useState('');
+    const [dueDate, setDueDate] = useState('');
+    const [editedDueDate, setEditedDueDate] = useState('');
 
 
     const addTask = (e) => {
@@ -25,13 +27,14 @@ const Todo = () => {
             const newTask = {
                 id: Date.now(),
                 text: inputText,
-                completed: false
+                completed: false,
+                dueDate: dueDate || null
             };
             setTasks([...tasks, newTask]);
             inputRef.current.value = '';
             inputRef.current.focus();
             setErrorMessage('');
-            
+            setDueDate('');
         } else {
             setErrorMessage("Please enter a task.");
             inputRef.current.focus();
@@ -53,16 +56,31 @@ const Todo = () => {
         setTasks(updatedTasks);
     }
 
+    const getRemainingDays = (dueDate) => {
+        if (!dueDate) return null;
+
+        const today = new Date();
+        const due = new Date(dueDate);
+        const diffTime = due - today;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        if (diffDays > 0) return `${diffDays} day(s) left`;
+        if (diffDays === 0) return 'Due today';
+        return `Overdue by ${Math.abs(diffDays)} day(s)`;
+    }
+
     const openEditModal = (id, currentText) => {
         setEditingTaskId(id);
         setEditedText(currentText);
+        const task = tasks.find(t => t.id === id);
+        setEditedDueDate(task?.dueDate || '');
         setIsModalOpen(true);
     };
 
     const saveEditedTask = () => {
         if (editedText.trim()) {
             const updatedTasks = tasks.map((task) =>
-                task.id === editingTaskId ? { ...task, text: editedText.trim() } : task
+                task.id === editingTaskId ? { ...task, text: editedText.trim(), dueDate: editedDueDate || null } : task
             );
             setTasks(updatedTasks);
         }
@@ -73,6 +91,7 @@ const Todo = () => {
         setIsModalOpen(false);
         setEditingTaskId(null);
         setEditedText('');
+        setEditedDueDate('');
     };
 
 
@@ -102,7 +121,7 @@ const Todo = () => {
 
         <form onSubmit={addTask} className='grid gap-1 items-center mb-8'>
             <div className='relative flex text-gray-700 items-center'>
-                <FaMapPin className='absolute right-3 top-1/2 transform -translate-y-1/2' />
+                <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} className='absolute text-gray-400 right-3 top-1/2 transform -translate-y-1/2 pb-0.5' />
                 <input ref={inputRef} type="text" onChange={() => setErrorMessage('')} className='border border-gray-400 p-1 rounded-lg w-full pl-3 pt-0.5' placeholder='Type your task' />
             </div>
 
@@ -136,22 +155,13 @@ const Todo = () => {
             </button>
         </div>
 
-        <div className='border border-gray-300 rounded-lg shadow-md'>
-            {filteredTasks.map((item, index) => {
-                return (
-                    <TodoItems key={index} text={item.text} id={item.id} completed={item.completed} deleteTask={deleteTask} completeTask={completeTask} openEditModal={openEditModal} />
-                )
-            })}
-        </div>
-
-        
-
         {isModalOpen && (
             <div className="fixed inset-0 bg-gradient-to-r from-indigo-600 to-pink-800 flex items-center justify-center z-50">
                 <div className="bg-white p-6 rounded shadow-lg w-full max-w-md">
                     
                     <h2 className="text-xl font-semibold mb-4 text-indigo-600">Edit Task !</h2>
-                    <input type="text" className="w-full border p-1.5 rounded mb-4" value={editedText} onChange={(e) => setEditedText(e.target.value)} autoFocus />
+                    <input type="text" className="w-full border p-1.5 rounded mb-2" value={editedText} onChange={(e) => setEditedText(e.target.value)} autoFocus />
+                    <input type="date" className="w-full border p-1.5 rounded mb-4" value={editedDueDate} onChange={(e) => setEditedDueDate(e.target.value)} />
                     
                     <div className="flex justify-end gap-2">
                         <button onClick={closeModal} className="bg-pink-800 text-white px-4 py-1 rounded hover:bg-pink-700">
@@ -166,6 +176,14 @@ const Todo = () => {
             </div>
         )}
 
+
+        <div className='border border-gray-300 rounded-lg shadow-md'>
+            {filteredTasks.map((item, index) => {
+                return (
+                    <TodoItems key={index} text={item.text} id={item.id} completed={item.completed} deleteTask={deleteTask} completeTask={completeTask} openEditModal={openEditModal} dueDate={item.dueDate} getRemainingDays={getRemainingDays} />
+                )
+            })}
+        </div>
     
     </div>
   )

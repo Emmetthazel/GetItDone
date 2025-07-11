@@ -7,6 +7,8 @@ const Todo = () => {
 
     const inputRef = useRef(null);
     const [tasks, setTasks] = useState(localStorage.getItem('tasks') ? JSON.parse(localStorage.getItem('tasks')) : []);
+    const [filteredTasks, setFilteredTasks] = useState(localStorage.getItem('tasks') ? JSON.parse(localStorage.getItem('tasks')) : []);
+    const [filter, setFilter] = useState('all');
     const [errorMessage, setErrorMessage] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingTaskId, setEditingTaskId] = useState(null);
@@ -76,7 +78,16 @@ const Todo = () => {
 
     useEffect(() => {
         localStorage.setItem('tasks', JSON.stringify(tasks));
-    }, [tasks]);
+
+        if (filter === 'all') {
+            setFilteredTasks(tasks);
+        } else if (filter === 'active') {
+            setFilteredTasks(tasks.filter(task => !task.completed));
+        } else if (filter === 'completed') {
+            setFilteredTasks(tasks.filter(task => task.completed));
+        }
+        
+    }, [tasks, filter]);
 
   return (
     <div className='bg-white p-6 rounded-lg shadow-md w-120 max-w-md flex flex-col min-h-[550px]'>
@@ -105,19 +116,35 @@ const Todo = () => {
             </button>
         </form>
 
-        <h1 className='flex text-gray-600 text-base font-medium justify-center'>Total Tasks: <div className='text-indigo-500 font-bold pl-1'>{tasks.length}</div></h1>
-        <div className='flex flex-1 justify-between items-center mb-8 ml-2 mr-2'>
-            <h1 className='flex text-gray-600 text-base font-medium'>Completed Tasks: <div className='text-green-500 font-bold pl-1'>{tasks.filter(task => task.completed).length}</div></h1>
-            <h1 className='flex text-gray-600 text-base font-medium'>Pending Tasks: <div className='text-pink-800 font-bold pl-1'>{tasks.filter(task => !task.completed).length}</div></h1>
+        <div>
+            <h1 className='flex text-gray-600 text-base font-medium justify-center'>Total Tasks: <div className='text-indigo-500 font-bold pl-1'>{tasks.length}</div></h1>
+            <div className='flex flex-1 justify-between items-center mb-8 ml-2 mr-2'>
+                <h1 className='flex text-gray-600 text-base font-medium'>Completed Tasks: <div className='text-green-500 font-bold pl-1'>{tasks.filter(task => task.completed).length}</div></h1>
+                <h1 className='flex text-gray-600 text-base font-medium'>Pending Tasks: <div className='text-pink-800 font-bold pl-1'>{tasks.filter(task => !task.completed).length}</div></h1>
+            </div>
+        </div>
+
+        <div className='flex justify-center items-center mb-0.5'>
+            <button className='text-white bg-gradient-to-r from-indigo-600 to-pink-800 px-4 py-0.5 rounded-2xl transition-transform duration-300 hover:scale-110 focus:scale-110' onClick={() => { setFilter('all'); setFilteredTasks(tasks); }}>
+                All
+            </button>
+            <button className='text-white bg-gradient-to-r from-indigo-600 to-pink-800 px-4 py-0.5 rounded-2xl transition-transform duration-300 hover:scale-110 focus:scale-110' onClick={() => { setFilter('active'); setFilteredTasks(tasks.filter(task => !task.completed)); }}>
+                Active
+            </button>
+            <button className='text-white bg-gradient-to-r from-indigo-600 to-pink-800 px-4 py-0.5 rounded-2xl transition-transform duration-300 hover:scale-110 focus:scale-110' onClick={() => { setFilter('completed'); setFilteredTasks(tasks.filter(task => task.completed)); }}>
+                Completed
+            </button>
         </div>
 
         <div className='border border-gray-300 rounded-lg shadow-md'>
-            {tasks.map((item, index) => {
+            {filteredTasks.map((item, index) => {
                 return (
                     <TodoItems key={index} text={item.text} id={item.id} completed={item.completed} deleteTask={deleteTask} completeTask={completeTask} openEditModal={openEditModal} />
                 )
             })}
         </div>
+
+        
 
         {isModalOpen && (
             <div className="fixed inset-0 bg-gradient-to-r from-indigo-600 to-pink-800 flex items-center justify-center z-50">

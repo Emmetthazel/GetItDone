@@ -3,8 +3,11 @@
 A modern, responsive Todo application built with React and Vite, featuring a clean UI powered by Tailwind CSS.
 
 ## App Preview
-![Preview 1](src/assets/1.png)  
-![Preview 2](src/assets/2.png)
+
+![Preview 1](src/assets/1.png)
+![Preview 2](src/assets/3.png)
+![Preview 3](src/assets/4.png)
+![Preview 4](src/assets/2.png)
 
 ## 🚀 Features
 
@@ -26,21 +29,21 @@ A modern, responsive Todo application built with React and Vite, featuring a cle
 ## 📦 Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/Emmetthazel/GetItDone.git
    cd TodoApplication
    ```
-
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
-
 3. **Start the development server**
+
    ```bash
    npm run dev
    ```
-
 4. **Open your browser**
    Navigate to `http://localhost:5173` to view the application
 
@@ -72,6 +75,7 @@ TodoApplication/
 ## 🎨 Features Overview
 
 ### Todo Management
+
 - Create new todo items
 - Mark todos as complete/incomplete
 - Edit existing todo content
@@ -79,6 +83,7 @@ TodoApplication/
 - Persistent state management
 
 ### User Experience
+
 - Intuitive and responsive interface
 - Smooth animations and transitions
 - Mobile-friendly design

@@ -23,7 +23,7 @@ A modern, responsive Todo application built with React and Vite, featuring a cle
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/Emmetthazel/GetItDone.git
    cd TodoApplication
    ```
 
